@@ -7,23 +7,25 @@
     "workspaceFolder": "/workspace",
     "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
     "remoteUser": "devuser",
+    "features": {
+        "ghcr.io/devcontainers/features/docker-in-docker:4.0.0": {}
+    },
     "postCreateCommand": "pip3 install -r requirements.txt",
     "mounts": [
         "source=${localEnv:USERPROFILE}/.aws,target=/home/devuser/.aws,type=bind,readonly"
     ],
+    "postStartCommand": "sudo dockerd > /dev/null 2>&1 &",
     "customizations": {
         "vscode": {
             "settings": {
                 "terminal.integrated.defaultProfile.linux": "bash"
             },
             "extensions": [
-                "eamodio.gitlens",
-                "amazonwebservices.aws-toolkit-vscode",
-                "github.copilot", 
-                "github.copilot-chat",
-                "ms-vscode.cpptools",
-                "ms-vscode.cpptools-extension-pack"
-            ]
+                    "amazonwebservices.aws-toolkit-vscode",
+                    "ms-vscode.cpptools",
+                    "ms-vscode.cpptools-extension-pack",
+                    "github.copilot-chat"
+                ]
         }
     }
 }

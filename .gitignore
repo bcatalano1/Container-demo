@@ -1,6 +1,7 @@
 # Environments and Dependencies
 .venv/
-node_modules/
+**/node_modules/
+.env
 __pycache__/
 
 # Compiled C++ files

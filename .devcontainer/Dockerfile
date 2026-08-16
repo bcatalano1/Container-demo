@@ -15,7 +15,13 @@ RUN dnf update -y && \
     gcc-c++ \
     gdb \
     make \
-    cmake && \
+    cmake \
+    tar \
+    findutils \
+    which \
+    grep \
+    docker \
+    docker-compose && \
     dnf clean all
 
     ARG USERNAME=devuser
