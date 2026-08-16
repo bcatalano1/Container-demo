@@ -1,0 +1,29 @@
+{
+    "name": "Fedora DevOps Container",
+    "build": {
+        "dockerfile": "Dockerfile",
+        "context": ".."
+    },
+    "workspaceFolder": "/workspace",
+    "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
+    "remoteUser": "devuser",
+    "postCreateCommand": "pip3 install -r requirements.txt",
+    "mounts": [
+        "source=${localEnv:USERPROFILE}/.aws,target=/home/devuser/.aws,type=bind,readonly"
+    ],
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "terminal.integrated.defaultProfile.linux": "bash"
+            },
+            "extensions": [
+                "eamodio.gitlens",
+                "amazonwebservices.aws-toolkit-vscode",
+                "github.copilot", 
+                "github.copilot-chat",
+                "ms-vscode.cpptools",
+                "ms-vscode.cpptools-extension-pack"
+            ]
+        }
+    }
+}
