@@ -1,5 +1,9 @@
 import json
+import boto3
+import uuid
 
+dynamodb = boto3.resource("dynamodb", region_name="us-east-1")
+table = dynamodb.Table('SourdoughRecipes')
 
 def lambda_handler(event, context):
     """Adjust sourdough hydration for high-altitude baking.
@@ -14,6 +18,16 @@ def lambda_handler(event, context):
     adjustment_per_1000_feet = 1.5
     added_water_percentage = (elevation / 1000.0) * adjustment_per_1000_feet
     final_hydration = base_hydration + added_water_percentage
+
+    table.put_item(
+        Item={
+            'recipe_id': str(uuid.uuid4()),
+            'base_hydration': str(base_hydration),
+            'elevation': str(elevation),
+            'added_water_percentage': str(added_water_percentage),
+            'final_hydration': str(final_hydration),
+        }
+    )
 
     response_body = {
         "base_hydration": base_hydration,
