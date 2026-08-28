@@ -73,3 +73,14 @@ def calculate(request: CalculationRequest):
                 "message": str(exc),
             },
         ) from exc
+@app.get("/recipes")
+def get_recipes(start_recipe_id: str = None, limit: int = 10) -> Any:
+    """Fetch recent sourdough recipes from DynamoDB."""
+    scan_kwargs: Dict[str, Any] = {"Limit": limit}
+    if start_recipe_id:
+        scan_kwargs["ExclusiveStartKey"] = {"recipe_id": start_recipe_id}
+    dynamodb = boto3.resource("dynamodb", region_name="us-east-1")
+    table = dynamodb.Table('SourdoughRecipes')
+    response = table.scan(**scan_kwargs)
+    return { "items": response.get('Items', []),
+            "next_key": response.get('LastEvaluatedKey', {}).get('recipe_id') }
