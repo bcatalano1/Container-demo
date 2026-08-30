@@ -112,29 +112,37 @@ form.addEventListener('submit', async function (event) {
     }
 });
 async function loadRecipes(startKey = null) {
-    let url = 'http://localhost:8000/recipes';
-    if (startKey) {
-        url += `?start_recipe_id=${encodeURIComponent(startKey)}`;
+    const currentUserId = localStorage.getItem('user_id');
+    const listElement = document.getElementById('recipes-list');
+
+    if (!currentUserId) {
+        listElement.textContent = 'Please log in to view your recipes.';
+        return;
     }
+
+    let url = `http://localhost:8000/recipes?user_id=${encodeURIComponent(currentUserId)}`;
+    if (startKey) {
+        url += `&start_recipe_id=${encodeURIComponent(startKey)}`;
+    }
+
     try {
         const response = await fetch(url);
 
         if (!response.ok) {
             throw new Error(`Request failed with status ${response.status}`);
         }
+
         const data = await response.json();
         console.log("Backend sent this many recipes:", data.items.length);
         console.log("Next bookmark is:", data.next_key);
-        //const recipes = await response.json();
-        const listElement = document.getElementById('recipes-list');
+
         listElement.innerHTML = '';
         if (data.items.length === 0) {
-            listElement.textContent = 'No recent recipes found.';
+            listElement.textContent = 'No recent recipes found for this user.';
             return;
         }
+
         data.items.forEach(recipe => {
-            //const recipeCard = document.createElement('div');
-            //recipeCard.textContent = `Recipe ID: ${recipe.recipe_id}, Base Hydration: ${recipe.base_hydration}%, Elevation: ${recipe.elevation} ft, Final Hydration: ${recipe.final_hydration}%`;
             const recipeCard = `
             <div style="border: 1px solid #ccc; padding: 10px; margin-top: 10px;">
                 <p><strong>Baker:</strong> ${recipe.user_email || 'Anonymous'}</p>
@@ -144,32 +152,27 @@ async function loadRecipes(startKey = null) {
                 <p><strong>Final Hydration:</strong> ${recipe.final_hydration}%</p>
             </div>
             `;
-            //listElement.appendChild(recipeCard);
             listElement.innerHTML += recipeCard;
         });
-        // Update pagination buttons
+
         nextBookmark = data.next_key;
         const prevBtn = document.getElementById('prevBtn');
         const nextBtn = document.getElementById('nextBtn');
 
-        // Handle the Previous Button
         if (currentPage === 0) {
-            prevBtn.disabled = true;  // We are on page 1, lock the button
+            prevBtn.disabled = true;
         } else {
-            prevBtn.disabled = false; // We are on page 2+, unlock the button
+            prevBtn.disabled = false;
         }
 
-        // Handle the Next Button
         if (!nextBookmark) {
-            nextBtn.disabled = true;  // No bookmark from AWS = no more recipes, lock it
+            nextBtn.disabled = true;
         } else {
-            nextBtn.disabled = false; // AWS gave us a bookmark, unlock it
+            nextBtn.disabled = false;
         }
 
-    }
-    catch (error) {
+    } catch (error) {
         console.error(error);
-        const listElement = document.getElementById('recipes-list');
         listElement.textContent = 'Unable to load recent recipes. Please check that the backend is running and try again.';
     }
 }

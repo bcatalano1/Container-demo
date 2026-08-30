@@ -1,8 +1,9 @@
 import json
-import os
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 import boto3
+from boto3.dynamodb.conditions import Attr, Key
+from botocore.exceptions import ClientError
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -19,7 +20,7 @@ app = FastAPI(title="Sourdough Calculator API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -35,7 +36,7 @@ def calculate(request: CalculationRequest):
             "base_hydration": request.base_hydration,
             "elevation": request.elevation,
             "user_id": request.user_id,
-            "user_email": request.user_email
+            "user_email": request.user_email,
         }
 
         response = lambda_client.invoke(
@@ -79,15 +80,33 @@ def calculate(request: CalculationRequest):
         ) from exc
 
 
-
 @app.get("/recipes")
-def get_recipes(start_recipe_id: str = None, limit: int = 10) -> Any:
-    """Fetch recent sourdough recipes from DynamoDB."""
-    scan_kwargs: Dict[str, Any] = {"Limit": limit}
-    if start_recipe_id:
-        scan_kwargs["ExclusiveStartKey"] = {"recipe_id": start_recipe_id}
+def get_recipes(start_recipe_id: Optional[str] = None, limit: int = 10, user_id: Optional[str] = None) -> Any:
+    """Fetch the current user's sourdough recipes from the user-specific DynamoDB index."""
+    if not user_id:
+        return {"items": [], "next_key": None}
+
+    desired_limit = max(1, int(limit))
     dynamodb = boto3.resource("dynamodb", region_name="us-east-1")
-    table = dynamodb.Table('SourdoughRecipes')
-    response = table.scan(**scan_kwargs)
-    return { "items": response.get('Items', []),
-            "next_key": response.get('LastEvaluatedKey', {}).get('recipe_id') }
+    table = dynamodb.Table("SourdoughRecipes")
+
+    query_kwargs: Dict[str, Any] = {
+        "IndexName": "UserRecipesIndex",
+        "KeyConditionExpression": Key("user_id").eq(user_id),
+        "Limit": desired_limit,
+    }
+
+    if start_recipe_id:
+        query_kwargs["ExclusiveStartKey"] = {"user_id": user_id, "recipe_id": start_recipe_id}
+
+    try:
+        response = table.query(**query_kwargs)
+        return {
+            "items": response.get("Items", [])[:desired_limit],
+            "next_key": response.get("LastEvaluatedKey", {}).get("recipe_id"),
+        }
+    except ClientError as exc:
+        error_code = exc.response.get("Error", {}).get("Code")
+        if error_code in {"ResourceNotFoundException", "ValidationException"}:
+            return {"items": [], "next_key": None}
+        raise
