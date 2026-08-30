@@ -27,6 +27,7 @@ def lambda_handler(event, context):
             'added_water_percentage': str(added_water_percentage),
             'final_hydration': str(final_hydration),
             'user_id': event.get("user_id", "anonymous"),
+            'user_email': event.get("user_email", "anonymous"),
         }
     )
 

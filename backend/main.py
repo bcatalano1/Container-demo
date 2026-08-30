@@ -12,6 +12,7 @@ class CalculationRequest(BaseModel):
     base_hydration: float
     elevation: float
     user_id: str
+    user_email: str
 
 
 app = FastAPI(title="Sourdough Calculator API")
@@ -34,6 +35,7 @@ def calculate(request: CalculationRequest):
             "base_hydration": request.base_hydration,
             "elevation": request.elevation,
             "user_id": request.user_id,
+            "user_email": request.user_email
         }
 
         response = lambda_client.invoke(

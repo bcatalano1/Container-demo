@@ -46,6 +46,8 @@ async function handleLogin() {
 
         // Save the unique ID so we remember them next time
         localStorage.setItem('user_id', userData.sub);
+        localStorage.setItem('user_email', userData.email);
+
         currentUserId = userData.sub;
         window.history.replaceState({}, document.title, "/app.html");
     }
@@ -80,7 +82,8 @@ form.addEventListener('submit', async function (event) {
             body: JSON.stringify({
                 base_hydration: baseHydration,
                 elevation: elevation,
-                user_id: localStorage.getItem('user_id') || null
+                user_id: localStorage.getItem('user_id') || null,
+                user_email: localStorage.getItem('user_email') || null
             }),
         });
 
@@ -134,6 +137,7 @@ async function loadRecipes(startKey = null) {
             //recipeCard.textContent = `Recipe ID: ${recipe.recipe_id}, Base Hydration: ${recipe.base_hydration}%, Elevation: ${recipe.elevation} ft, Final Hydration: ${recipe.final_hydration}%`;
             const recipeCard = `
             <div style="border: 1px solid #ccc; padding: 10px; margin-top: 10px;">
+                <p><strong>Baker:</strong> ${recipe.user_email || 'Anonymous'}</p>
                 <p><strong>Base Hydration:</strong> ${recipe.base_hydration}%</p>
                 <p><strong>Elevation:</strong> ${recipe.elevation} ft</p>
                 <p><strong>Added Water:</strong> ${recipe.added_water_percentage}%</p>
