@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>High-Altitude Sourdough Calculator</title>
+  <!-- Link to your new CSS file -->
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <main class="card">
+    <div class="eyebrow">Baking science</div>
+    <h1>High-Altitude Sourdough Calculator</h1>
+    <p class="subtitle">
+      Adjust hydration for elevation so your loaf stays workable in thinner air.
+    </p>
+
+    <form id="calculator-form">
+      <div class="field">
+        <label for="base-hydration">Base Hydration (%)</label>
+        <input id="base-hydration" name="base_hydration" type="number" step="0.1" min="0" value="75" required />
+      </div>
+
+      <div class="field">
+        <label for="elevation">Elevation (feet)</label>
+        <input id="elevation" name="elevation" type="number" step="1" min="0" value="6224" required />
+      </div>
+
+      <button type="submit">Calculate Hydration</button>
+    </form>
+
+    <section id="result" class="result" aria-live="polite">
+      <div class="result-label">Adjusted Hydration</div>
+      <div id="adjusted-hydration" class="result-value">--</div>
+      <div class="result-meta" id="result-meta">Your final hydration percentage appears here.</div>
+    </section>
+
+    <h2>Recent Recipes</h2>
+    <div id="recipes-list" class="recipes-list"></div>
+    <div style="margin-top: 15px;">
+      <button id="prevBtn" onclick="goBack()" disabled>Previous 10</button>
+      <button id="nextBtn" onclick="goForward()" disabled>Next 10</button>
+    </div>
+    <div id="error-message" class="error" aria-live="polite"></div>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+
+</html>

@@ -11,6 +11,7 @@ from pydantic import BaseModel
 class CalculationRequest(BaseModel):
     base_hydration: float
     elevation: float
+    user_id: str
 
 
 app = FastAPI(title="Sourdough Calculator API")
@@ -32,6 +33,7 @@ def calculate(request: CalculationRequest):
         payload = {
             "base_hydration": request.base_hydration,
             "elevation": request.elevation,
+            "user_id": request.user_id,
         }
 
         response = lambda_client.invoke(
@@ -73,6 +75,9 @@ def calculate(request: CalculationRequest):
                 "message": str(exc),
             },
         ) from exc
+
+
+
 @app.get("/recipes")
 def get_recipes(start_recipe_id: str = None, limit: int = 10) -> Any:
     """Fetch recent sourdough recipes from DynamoDB."""

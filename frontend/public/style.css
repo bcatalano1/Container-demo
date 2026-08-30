@@ -1,0 +1,230 @@
+ :root {
+        --bg: #f7f3ee;
+        --panel: rgba(255, 255, 255, 0.9);
+        --panel-border: rgba(111, 78, 55, 0.12);
+        --primary: #7a4b2a;
+        --primary-dark: #56351e;
+        --accent: #d9b38c;
+        --text: #2e241d;
+        --muted: #695b53;
+        --success: #2f7d56;
+        --error: #a63d2d;
+        --shadow: 0 18px 40px rgba(55, 36, 24, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: Arial, Helvetica, sans-serif;
+        background:
+          radial-gradient(circle at top, rgba(217, 179, 140, 0.55), transparent 35%),
+          linear-gradient(135deg, #f8f0e8 0%, #f3efe9 35%, #efe5dc 100%);
+        color: var(--text);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+      }
+
+      .card {
+        width: min(100%, 520px);
+        background: var(--panel);
+        backdrop-filter: blur(8px);
+        border: 1px solid var(--panel-border);
+        border-radius: 22px;
+        box-shadow: var(--shadow);
+        padding: 28px 22px;
+      }
+
+      .eyebrow {
+        display: inline-block;
+        font-size: 0.72rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        font-weight: 700;
+        color: var(--primary);
+        margin-bottom: 12px;
+      }
+
+      h1 {
+        margin: 0 0 6px;
+        font-size: clamp(2rem, 3vw, 2.7rem);
+        line-height: 1.1;
+      }
+      .login-btn {
+        /* display: inline-block;
+        padding: 10px 20px;
+        background-color: #ff9900;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        margin-top: 15px;  */
+        display: block;
+        border: none;
+        border-radius: 12px;
+        padding: 16px 18px;
+        font-size: 1rem;
+        font-weight: 700;
+        color: white;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        cursor: pointer;
+        transition: transform 0.15s ease, box-shadow 0.2s ease;
+        box-shadow: 0 10px 22px rgba(86, 53, 30, 0.25);
+      }
+
+      .login-btn:hover {
+        background-color: #e68a00;
+      }
+      p, a {
+        display: block;
+        margin: 0 0 22px;}
+
+      h2 {
+        margin: 0 0 6px;
+        font-size: clamp(2rem, 3vw, 2.7rem);
+        line-height: 1.1;
+      }
+
+      .subtitle {
+        margin: 0 0 22px;
+        color: var(--muted);
+        font-size: 0.98rem;
+        line-height: 1.5;
+      }
+
+      form {
+        display: grid;
+        gap: 18px;
+      }
+
+      .field {
+        display: grid;
+        gap: 8px;
+      }
+
+      label {
+        font-size: 0.96rem;
+        font-weight: 700;
+        color: var(--text);
+      }
+
+      input {
+        width: 100%;
+        border: 1px solid rgba(122, 75, 42, 0.25);
+        background: rgba(255, 255, 255, 0.7);
+        border-radius: 12px;
+        padding: 14px 14px;
+        font-size: 1.05rem;
+        color: var(--text);
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      input:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 4px rgba(122, 75, 42, 0.12);
+      }
+
+      button {
+        border: none;
+        border-radius: 12px;
+        padding: 16px 18px;
+        font-size: 1rem;
+        font-weight: 700;
+        color: white;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        cursor: pointer;
+        transition: transform 0.15s ease, box-shadow 0.2s ease;
+        box-shadow: 0 10px 22px rgba(86, 53, 30, 0.25);
+      }
+
+      button:hover {
+        transform: translateY(-1px);
+      }
+
+      button:active {
+        transform: translateY(0);
+      }
+      button:disabled {
+      background-color: #cccccc !important; /* Make it gray */
+      color: #666666 !important;            /* Dark gray text */
+      cursor: not-allowed;                  /* Changes the mouse to a red circle with a slash */
+      opacity: 0.7;                         /* Make it slightly faded */
+      border: 1px solid #999999;
+      }
+
+      /* Optional: Make your active buttons look clickable */
+      button:not(:disabled) {
+          cursor: pointer;
+      }
+
+      .result {
+        margin-top: 22px;
+        background: linear-gradient(135deg, rgba(217, 179, 140, 0.18), rgba(122, 75, 42, 0.06));
+        border: 1px solid rgba(122, 75, 42, 0.12);
+        border-radius: 18px;
+        padding: 18px 16px;
+        display: none;
+      }
+
+      .result.visible {
+        display: block;
+      }
+
+      .result-label {
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        font-size: 0.72rem;
+        color: var(--muted);
+        margin-bottom: 8px;
+        font-weight: 700;
+      }
+
+      .result-value {
+        font-size: clamp(2rem, 5vw, 3rem);
+        font-weight: 800;
+        color: var(--success);
+        line-height: 1.1;
+      }
+
+      .result-meta {
+        margin-top: 10px;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      .error {
+        margin-top: 14px;
+        background: rgba(166, 61, 45, 0.08);
+        color: var(--error);
+        border: 1px solid rgba(166, 61, 45, 0.18);
+        border-radius: 12px;
+        padding: 12px 14px;
+        display: none;
+        font-weight: 600;
+      }
+
+      .error.visible {
+        display: block;
+      }
+
+      @media (max-width: 480px) {
+        body {
+          padding: 16px;
+        }
+
+        .card {
+          padding: 22px 16px;
+        }
+
+        h1 {
+          font-size: 2rem;
+        }
+        h2 {
+          font-size: 2rem;
+        }
+      }
